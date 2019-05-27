@@ -23,7 +23,7 @@ class Modifier
       next if attribute.nil?
 
       href = URI.parse(URI.escape(attribute.value))
-      next unless href.host == @url.host
+      next if href.host != @url.host
 
       new_href = URI.parse(URI.unescape(href.to_s))
       new_href.scheme = nil
