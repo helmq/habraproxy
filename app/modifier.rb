@@ -1,5 +1,4 @@
 require 'nokogiri'
-require 'erb'
 
 class Modifier
   attr_reader :document
@@ -27,12 +26,12 @@ class Modifier
       href = URI.parse(URI.escape(attribute.value))
       next unless href.host == @url.host
 
-      new_href = href.path
-      # new_href.scheme = nil
-      # new_href.host = nil
-      # new_href.port = nil
+      new_href = URI.parse(URI.unescape(href.to_s))
+      new_href.scheme = nil
+      new_href.host = nil
+      new_href.port = nil
 
-      node.set_attribute(attribute_name, new_href)
+      node.set_attribute(attribute_name, new_href.to_s)
     end
     self
   end
