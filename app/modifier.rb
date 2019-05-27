@@ -3,10 +3,9 @@ require 'nokogiri'
 class Modifier
   attr_reader :document
 
-  def initialize(html, url = 'https://habr.com', host = 'localhost:3000')
+  def initialize(html, url)
     @document = Nokogiri::HTML.parse(html, nil, 'utf-8')
     @url = URI(url)
-    @host = URI(host)
   end
 
   def apply_all_modifiers
