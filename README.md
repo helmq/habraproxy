@@ -6,9 +6,17 @@
 
 [Heroku](https://radiant-escarpment-88463.herokuapp.com)
 
+# Установка и запуск
+
+```
+docker-compose build
+docker-compose up
+localhost:3000
+```
+
 # Описание
 
-##### Тестовое задание из открытого github репозитория компании Ivelum сделанное на Ruby/Sinatra/Nokogiri
+##### Тестовое задание из открытого github репозитория компании Ivelum, сделанное на Ruby/Sinatra/Nokogiri
 
 Реализовать простой http-прокси-сервер, запускаемый локально (порт на ваше
 усмотрение), который показывает содержимое страниц Хабра. Прокси должен
