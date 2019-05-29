@@ -6,46 +6,14 @@ class Modifier
   def initialize(html, url)
     @document = Nokogiri::HTML.parse(html, nil, 'utf-8')
     @url = URI(url)
+    @hyperlink_tag_attrs = { a: 'href', use: 'xlink:href', form: 'action' }
   end
 
-  def apply_all_modifiers
-    modify_links_in_document
-    modify_text_nodes
-    fix_unicode_plus_symbols
-  end
-
-  def modify_links_in_document
-    tag_attrs = { a: 'href', use: 'xlink:href' }
-
-    @document.search(*tag_attrs.keys).each do |node|
-      attribute_name = tag_attrs[node.name.to_sym]
-      attribute = node.attribute(attribute_name)
-      next if attribute.nil?
-
-      href = URI.parse(URI.escape(attribute.value))
-      next if href.host != @url.host
-
-      new_href = URI.parse(URI.unescape(href.to_s))
-      new_href.scheme = nil
-      new_href.host = nil
-      new_href.port = nil
-
-      node.set_attribute(attribute_name, new_href.to_s)
-    end
-    self
-  end
-
-  def modify_text_nodes(node = @document.children)
+  def modify_nodes(node = @document.children)
     node.each do |n|
+      modify_hyperlink_node(n) if @hyperlink_tag_attrs.key?(n.name.to_sym)
       n.content = modify_string(n.text, 6, '™') if n.text? && n.text.match?(/\p{L}+/)
-      modify_text_nodes(n.children) if n.children
-    end
-    self
-  end
-
-  def fix_unicode_plus_symbols
-    @document.search('strong.stacked-menu__item-counter').each do |node|
-      node.content = node.content.sub('&plus;', '+')
+      modify_nodes(n.children) if n.children
     end
     self
   end
@@ -56,10 +24,27 @@ class Modifier
 
   private
 
+  def modify_hyperlink_node(node)
+    attribute_name = @hyperlink_tag_attrs[node.name.to_sym]
+    attribute = node.attribute(attribute_name)
+    return if attribute.nil?
+
+    href = URI.parse(URI.escape(attribute.value))
+    return if href.host != @url.host
+
+    new_href = URI.parse(URI.unescape(href.to_s))
+    new_href.scheme = nil
+    new_href.host = nil
+    new_href.port = nil
+
+    node.set_attribute(attribute_name, new_href.to_s)
+  end
+
   def modify_string(str, word_len, appended)
     regex = /\p{L}/
     current_word_len = 0
-    str_as_ary = str.split('')
+    fixed_str = str.sub('&plus;', '+')
+    str_as_ary = fixed_str.split('')
 
     new_str_as_ary = str_as_ary.map.with_index do |char, index|
       unless char.match?(regex)

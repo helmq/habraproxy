@@ -17,5 +17,5 @@ end
 get '/*' do
   target_url = request.fullpath ? URI.join(url, request.fullpath) : URI.parse(url)
   html = target_url.read
-  Modifier.new(html, url).apply_all_modifiers.to_html
+  Modifier.new(html, url).modify_nodes.to_html
 end
