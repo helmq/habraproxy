@@ -16,7 +16,7 @@ localhost:3000
 
 # Описание
 
-##### Тестовое задание из открытого github репозитория компании Ivelum, сделанное на Ruby/Sinatra/Nokogiri
+##### Тестовое задание из открытого [github репозитория](https://github.com/ivelum/job/blob/master/code_challenges/python.md) компании Ivelum, сделанное на Ruby/Sinatra/Nokogiri
 
 Реализовать простой http-прокси-сервер, запускаемый локально (порт на ваше
 усмотрение), который показывает содержимое страниц Хабра. Прокси должен
